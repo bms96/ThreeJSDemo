@@ -1,0 +1,239 @@
+<!-- 
+	Bryan Santini
+	2/23/2022
+	CMSC 405 Spring
+
+
+	Description:
+
+	This program creates a 3D scene using ThreeJS. I started with the
+	starter template from ThreeJS documentation and went on from there.
+	6 shapes are generated using different lighting effects and certain 
+	parameters are able to be controlled by the user through radio 
+	buttons and sliders.
+ -->
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+		</style>
+	</head>
+	<body>
+
+		  <input onclick="l1fn" type="radio" id="l1" value="light1">
+		  <label for="l1">Light 1</label><br>
+		  
+		  <input onclick="l2fn" type="radio" id="l2" value="light2">
+		  <label for="l2">Light 2</label><br>
+
+		  <input onclick="l3fn" type="radio" id="l3" value="light2">
+		  <label for="l3">Light 3</label>
+
+		  <br>
+		<!-- Light slider -->
+		<input type="range" min="0" max="10" step="0.1" value="50" class="slider" id="myRange">
+		<p>Light Intensity: <span id="value"></span></p>
+
+		<!-- Camera slider -->
+		<input type="range" min="0" max="10" step="0.1" value="50" class="slider" id="cameraRange">
+		<p>Camera Z: <span id="cameraValue"></span></p>
+
+		<script src="js/three.js"></script>
+		<script>
+
+
+			// Light slider
+			var lightSlider = document.getElementById("myRange");
+			var output = document.getElementById("value");
+
+			output.innerHTML = lightSlider.value;
+
+			lightSlider.oninput = function() {
+				output.innerHTML = this.value;
+			};
+
+			// Camera Slider
+			var cameraSlider = document.getElementById("cameraRange");
+			var cameraOutput = document.getElementById("cameraValue");
+
+			output.innerHTML = cameraSlider.value;
+
+			cameraSlider.oninput = function() {
+				cameraOutput.innerHTML = this.value;
+			};
+
+
+			// const gui = new dat.GUI();
+
+			const scene = new THREE.Scene();
+			scene.background = new THREE.Color( 0x414042 );
+			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+			const renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+			// Sphere
+			const sphereGeometry = new THREE.SphereBufferGeometry(.5, 64, 64);
+
+			const sphereMaterial = new THREE.MeshStandardMaterial();
+			sphereMaterial.metalness = 0.7;
+			sphereMaterial.roughness = 0.2;
+			sphereMaterial.bumpMap;
+			sphereMaterial.bumpScale = 0.9;
+			sphereMaterial.wireframe = true;
+			sphereMaterial.color = new THREE.Color(0x292929);
+
+			const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+			sphere.translateX( 2 );
+			scene.add( sphere );
+
+			// cone
+			const coneGeometry = new THREE.ConeGeometry( .5, 1, 72 );
+			const coneMaterial = new THREE.MeshStandardMaterial( {color: 0xffff00} );
+			coneMaterial.metalness = 0.9;
+			coneMaterial.roughness = 0.1;
+			coneMaterial.bumpMap;
+			coneMaterial.bumpScale = 0.9;
+			coneMaterial.wireframe = false;
+			const cone = new THREE.Mesh( coneGeometry, coneMaterial );
+			cone.translateX( 2 );
+			cone.translateY( 2 );
+			scene.add( cone );
+		
+			// Cube
+			const cubeGeometry = new THREE.BoxGeometry();
+			const cubeMaterial = new THREE.MeshStandardMaterial( { color: 0x46898a } );
+			cubeMaterial.wireframe = true;
+			cubeMaterial.metalness = 0.9;
+			cubeMaterial.roughness = 0.8;
+			cubeMaterial.flatShading = false;
+			// cubeMaterial.receiveShadow = true;
+			
+
+			const cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
+			cube.translateX( -2 );
+			scene.add( cube );
+
+			// Torus (supposed to be?)
+			const torusGeometry = new THREE.TorusGeometry( .5, .15, 1000 );
+			const torusMaterial = new THREE.MeshStandardMaterial( { color: 0xda6eeb } );
+			torusMaterial.wireframe = true;
+			torusMaterial.metalness = 0.9;
+			torusMaterial.roughness = 0.8;
+			torusMaterial.flatShading = false;
+
+			const torus = new THREE.Mesh( torusGeometry, torusMaterial );
+			torus.translateX( -2 );
+			torus.translateY( 2 )
+			scene.add( torus );
+
+			// Cylinder
+			const cylinderGeometry = new THREE.CylinderGeometry( .3, .3, 1, 32 );
+			const cylinderMaterial = new THREE.MeshStandardMaterial( {color: 0x00ff55} );
+			cylinderMaterial.wireframe = false;
+			cylinderMaterial.metalness = 0.9;
+			cylinderMaterial.roughness = 0.1;
+			cylinderMaterial.flatShading = false;
+
+			const cylinder = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
+			cylinder.translateX( -2 );
+			cylinder.translateY( -2 )
+			scene.add( cylinder );
+
+			// Torus Knot
+			const tknotGeometry = new THREE.TorusKnotGeometry( .3, .1, 100, 16 );
+			const tknotMaterial = new THREE.MeshStandardMaterial( { color: 0xff3300 } );
+			tknotMaterial.wireframe = false;
+			tknotMaterial.metalness = 0.9;
+			tknotMaterial.roughness = 0.1;
+			tknotMaterial.flatShading = false;
+
+			const torusKnot = new THREE.Mesh( tknotGeometry, tknotMaterial );
+			torusKnot.translateX( 2 );
+			torusKnot.translateY( -2 );
+			scene.add( torusKnot );
+						
+
+			//Lights
+			const pointLight = new THREE.PointLight(0xffffff, 9)
+			pointLight.position.x = -3;
+			pointLight.position.y = 0;
+			pointLight.position.z = 4;
+			
+			
+
+			const pointLight2 = new THREE.PointLight(0xff0000, 3)
+			pointLight2.position.x = 3;
+			pointLight2.position.y = 0;
+			pointLight2.position.z = 4;
+
+			const pointLight3 = new THREE.PointLight(0x1a4de8, 3)
+			pointLight3.position.x = 0;
+			pointLight3.position.y = 3;
+			pointLight3.position.z = 1;
+			
+
+			camera.position.z = 5;
+
+			function animate() {
+				requestAnimationFrame( animate );
+
+				// Enabling lights through radio buttons
+				if(document.getElementById("l1").checked) {
+				scene.add(pointLight);
+				}
+
+				if(document.getElementById("l2").checked) {
+				scene.add(pointLight2);
+				}
+
+				if(document.getElementById("l3").checked) {
+				scene.add(pointLight3);
+				}
+
+				pointLight.intensity = lightSlider.value;
+				pointLight2.intensity = lightSlider.value;
+				pointLight3.intensity = lightSlider.value;
+
+				camera.position.z = cameraSlider.value;
+
+				z = 0;
+				z-= 0.005
+
+				cube.rotation.x += 0.01;
+				cube.rotation.y += 0.01;
+				cube.rotation.z;
+
+				sphere.rotation.x += 0.01;
+				sphere.rotation.y += 0.01;
+				sphere.translateZ(z);
+
+				cone.rotation.x += 0.01;
+				cone.rotation.y += 0.01;
+				cone.rotation.z += 0.03;
+
+				torus.rotation.x += 0.11;
+				torus.rotation.y += 0.01;
+				torus.rotation.z += 0.03;
+
+				cylinder.rotation.x += 0.01;
+				cylinder.rotation.y += 0.02;
+				cylinder.rotation.z += 0.01;
+
+				torusKnot.rotation.x += 0.01;
+				torusKnot.rotation.y += 0.02;
+				torusKnot.rotation.z += 0.01;
+				
+
+				renderer.render( scene, camera );
+			};
+
+			animate();
+		</script>
+	</body>
+</html>
